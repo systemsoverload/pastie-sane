@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+	<style type='text/css'>
+		body {
+			margin: 0px;
+			padding: 0px;
+			font: 1.6em 'Georgia', 'Tahoma', serif;
+			color: #333;
+		}
+
+		#content {
+			width: 940px;
+			margin: 0 auto;
+		}
+
+		input, textarea, button {
+			font: 15px 'Monaco', 'Bitstream Vera Sans', 'Courier', monospace;
+		}
+		body {
+			overflow: hidden;
+		}
+
+		#input-field {
+			position: absolute;
+			left: 10px;
+			right:10px;
+			bottom:20px;
+			top:175px;
+		}
+	</style>
+</head>
+<body>
+	<div id="content">
+		<h1>Pastie</h1>
+		<span style='float:right'>
+			<label for='language'>Language:</label>
+			<select id='language'>
+				<option value='text'>Plaintext</option>
+				<option value='javascript'>Javascript</option>
+				<option value='json'>JSON</option>
+				<option value='csharp'>C#</option>
+				<option value='perl'>Perl</option>
+			</select>
+		</span>
+		<div id="input-field"></div>
+		<button id="save-button">Save</button>
+		<span style='float:right'>
+			<label for='short_url'>Short URL:</label>
+			<input type='text' disabled='disabled' id='short_url'></input>
+		</span>
+	</div>
+
+
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/ace-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-xml-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-javascript-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-perl-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-csharp-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-json-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-text-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/base64.js" type="text/javascript"></script>
+	<script src="/static/js/rawdeflate.js" type="text/javascript"></script>
+	<script src="/static/js/rawinflate.js" type="text/javascript"></script>
+	<script src="/static/js/sjcl.js" type="text/javascript"></script>
+	<script type="text/javascript">
+
+		function initEditor() {
+			window.aceEditor = ace.edit("input-field");
+			window.aceEditor.setTheme("ace/theme/monokai");
+			window.aceEditor.renderer.setShowPrintMargin(false);
+			window.aceEditor.setHighlightActiveLine(false);
+		}
+
+		function setAceMode( language ){
+			var XMLMode = ace.require("ace/mode/xml").Mode
+				, JSMode = ace.require("ace/mode/javascript").Mode
+				, PerlMode = ace.require("ace/mode/perl").Mode
+				, CsharpMode = ace.require("ace/mode/csharp").Mode
+				, JSONMode = ace.require("ace/mode/json").Mode
+				, TextMode = ace.require("ace/mode/text").Mode
+
+			if ( language === 'text'){
+				window.aceEditor.getSession().setMode(new TextMode());
+			}else if( language === 'javascript'){
+				window.aceEditor.getSession().setMode(new JSMode());
+			}else if( language === 'json'){
+				window.aceEditor.getSession().setMode(new JSONMode());
+			}else if( language === 'csharp'){
+				window.aceEditor.getSession().setMode(new CsharpMode());
+			}else if( language === 'perl'){
+				window.aceEditor.getSession().setMode(new PerlMode());
+			}
+		}
+
+		$(function(){
+
+			initEditor();
+
+			var base64
+			, check
+			, checksum
+			, deflated
+			, encoded
+			, input
+			, chunkEncoded
+			, expandShortUrl
+			, loadData
+			, packData
+			, getShortUrl;
+
+			getShortUrl = function(url){
+				return $.ajax({
+					url:"http://api.bitly.com/v3/shorten?callback=?"
+					, dataType: 'json'
+					, data: {
+						"format": "json"
+						, "apiKey": "R_db4dda4e46e10ee6f38868ecf63359c5"
+						, "login": "tjkells"
+						, "longUrl": url
+					}
+				});
+			};
+
+			expandShortUrl = function(hash){
+				return $.ajax({
+					url:"http://api.bitly.com/v3/expand?callback=?"
+					, dataType: 'json'
+					, data: {
+						"format": "json"
+						, "apiKey": "R_db4dda4e46e10ee6f38868ecf63359c5"
+						, "login": "tjkells"
+						, "hash": hash
+					}
+				});
+			};
+
+			checksum = function(string) {
+				var chk, chr, i;
+				chk = 0;
+				for (i in string) {
+					chr = string[i];
+					chk += chr.charCodeAt(0) * (i + 1);
+				}
+				return chk % 10;
+			};
+
+			chunkEncoded = function(encoded){
+				var chunksObj = {}
+					, chunks = []
+					, chunkUrls = []
+					, chunkUrls2 = [];
+
+				//Stuff 2000 character strings into an array
+ 				while( encoded.length > 2000 ){
+					chunksObj[ Object.keys(chunks).length ] = encoded.slice(0,2000);
+					chunks.push(encoded.slice(0,2000));
+					encoded = encoded.slice(2000,encoded.length);
+				}
+
+				//Stuff the remainder into the array
+				chunksObj[ Object.keys(chunks).length ] = encoded;
+				chunks.push(encoded);
+				console.log( chunksObj )
+
+				for( var k in chunksObj){
+					var chunk = chunksObj[k];
+					getShortUrl(window.location.href.replace(/#/, '') + '#' + chunk).success(function(res){
+						chunkUrls.push( res.data.url.split('http://bit.ly/')[1] );
+						console.log( chunkUrls )
+						if (chunks.length == chunkUrls.length){
+							getShortUrl(window.location.href.replace(/#/,'')+'#expand='+chunkUrls)
+								.success(function(res){
+									$('#short_url').val(res.data.url);
+								});
+						}
+					});
+				}
+				for (var i = 0; i < chunks.length; i++) {
+					var chunk = chunks[i];
+					getShortUrl(window.location.href.replace(/#/, '') + '#' + chunk).success(function(res){
+						chunkUrls.push( res.data.url.split('http://bit.ly/')[1] );
+						console.log( chunkUrls )
+						if (chunks.length == chunkUrls.length){
+							getShortUrl(window.location.href.replace(/#/,'')+'#expand='+chunkUrls)
+								.success(function(res){
+									$('#short_url').val(res.data.url);
+								});
+						}
+					});
+
+				}
+ 			};
+
+			packData = function(input){
+				var base64
+					, encrypted
+					, deflated
+					, encoded
+					, language
+					, data;
+
+				language = $('#language').val();
+
+				//Add on some meta-data wooooo
+				data = {
+					"paste_data": input
+					,"language": language
+				}
+
+				//Encrypt
+				encrypted = sjcl.encrypt("somebiglongsecretkeygoeshere",JSON.stringify(data));
+				//Deflate
+				deflated = RawDeflate.deflate(encrypted);
+
+				//Base64 Encode
+				base64 = Base64.toBase64(deflated);
+
+				encoded = base64;
+
+				if ( encoded.length > 2047 ){
+					console.log(encoded)
+					chunkEncoded( encoded );
+				}else{
+					longurl = window.location.href.replace(/#/, '') + '#' + encoded;
+					getShortUrl(longurl).success(function(res){ $('#short_url').val(res.data.url); });
+				}
+			};
+
+			unpackData = function(input){
+				console.log(input)
+				var base64
+					, decrypted
+					, deflated
+					, inflated
+					, decoded_input;
+
+				base64 = input.slice(0, (input.length - 2) + 1 || 9e9);
+				deflated = Base64.fromBase64(base64);
+
+				//Inflate
+				inflated = RawDeflate.inflate(deflated);
+				//Decrypt Inflated
+				decrypted = sjcl.decrypt('somebiglongsecretkeygoeshere',inflated);
+				//Parse into native object
+				decoded_input = JSON.parse(decrypted);
+				loadData(decoded_input);
+			};
+
+			loadData = function(data){
+				$('#language').val(data.language);
+				window.aceEditor.getSession().setValue(data.paste_data);
+				setAceMode(data.language);
+			};
+
+			$('#language').change(function(){
+				setAceMode(this.value);
+			})
+
+			$('#save-button').click(function(){
+				input = window.aceEditor.getSession().getValue();
+				packData(input);
+			});
+
+			if (window.location.hash) {
+				getShortUrl(window.location.href).success(function(res){ $('#short_url').val(res.data.url); });
+				hash = window.location.hash.replace(/^#/, '');
+				window.location.hash = '';
+
+				//If the hash starts with 'expand' we know we have to blow out the list of hashes
+				// and expand multiple bit.ly urls here and decode the returned mega-hash
+				if (hash.lastIndexOf("expand", 0) === 0){
+
+					//bitly hashes are comma-separated
+					var hashes = hash.split('expand=')[1].split(',')
+						,expanded = [];
+					for (var i = 0; i < hashes.length; i++) {
+						var hash = hashes[i];
+						expandShortUrl(hash).success(function(res){
+							expanded.push( res.data.expand[0].long_url.split('http://127.0.0.1:5000/#')[1] );
+							if(expanded.length == hashes.length ){
+								console.log(expanded)
+								hash = expanded.join('');
+								unpackData(hash);
+							}
+						});
+					};
+				}else{
+					unpackData(hash);
+				}
+			}
+		});
+	</script>
+
+</body>
+</html>
