@@ -40,6 +40,7 @@
 			<label for='language'>Language:</label>
 			<select id='language'>
 				<option value='text'>Plaintext</option>
+				<option value='sh'>Bash</option>
 				<option value='csharp'>C#</option>
 				<option value='javascript'>Javascript</option>
 				<option value='json'>JSON</option>
@@ -68,6 +69,7 @@
 	<script src="/static/js/ace/build/src/mode-markdown-noconflict.js" type="text/javascript"></script>
 	<script src="/static/js/ace/build/src/mode-python-noconflict.js" type="text/javascript"></script>
 	<script src="/static/js/ace/build/src/mode-sql-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-sh-noconflict.js" type="text/javascript"></script>
 	<script type="text/javascript">
 
 		function initEditor() {
@@ -86,7 +88,7 @@
 				, TextMode = ace.require("ace/mode/text").Mode
 				, PythonMode = ace.require("ace/mode/python").Mode
 				, MarkdownMode = ace.require("ace/mode/markdown").Mode
-				, SQLMode = ace.require("ace/mode/sql").Mode
+				, ShellMode = ace.require("ace/mode/sh").Mode
 
 			if ( language === 'text'){
 				window.aceEditor.getSession().setMode(new TextMode());
@@ -104,6 +106,8 @@
 				window.aceEditor.getSession().setMode(new MarkdownMode());
 			}else if( language === 'sql'){
 				window.aceEditor.getSession().setMode(new SQLMode());
+			}else if( language === 'sh'){
+				window.aceEditor.getSession().setMode(new ShellMode());
 			}
 		}
 
