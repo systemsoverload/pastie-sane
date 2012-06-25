@@ -7,6 +7,7 @@
 			padding: 0px;
 			font: 1.6em 'Georgia', 'Tahoma', serif;
 			color: #333;
+			height: 100%;
 		}
 
 		#header-content {
@@ -23,25 +24,24 @@
 
 		#ace-editor {
 			display:inline-block;
-			height: 750px;
+			min-height: 625px;
+			max-height: 750px;
 			width: 99%;
 		}
 		#markdown-display{
 			display:none;
+			float:right;
 			background-color:#cdcdcd;
-			height: 750px;
+			height: 100%;
 			width: 50%;
 		}
 		#short_url{
-			width:250px;
+			width:275px;
 		}
-		#save-button{
-			position: absolute;
-			bottom: 25px;
-			left: 100px;
+		#content{
+			height:100%;
 		}
 		#editor-container{
-			text-align: center;
 			margin-left:auto;
 			margin-right:auto;
 		}
@@ -65,14 +65,15 @@
 					<option value='perl'>Perl</option>
 					<option value='python'>Python</option>
 					<option value='sql'>SQL</option>
+					<option value='xml'>XML</option>
 				</select>
+				<button id="save-button">Save</button>
 			</span>
 		</div>
 
 		<div id="editor-container">
 			<div id="ace-editor"></div>
 			<div id="markdown-display"></div>
-			<button id="save-button">Save</button>
 		</div>
 
 	</div>
@@ -88,7 +89,9 @@
 	<script src="/static/js/ace/build/src/mode-markdown-noconflict.js" type="text/javascript"></script>
 	<script src="/static/js/ace/build/src/mode-python-noconflict.js" type="text/javascript"></script>
 	<script src="/static/js/ace/build/src/mode-sql-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/ace/build/src/mode-xml-noconflict.js" type="text/javascript"></script>
 	<script src="/static/js/ace/build/src/mode-sh-noconflict.js" type="text/javascript"></script>
+	<script src="/static/js/showdown.js" type="text/javascript"></script>
 	<script type="text/javascript">
 
 		function initEditor() {
@@ -97,6 +100,17 @@
 			window.aceEditor.renderer.setShowPrintMargin(false);
 			window.aceEditor.setHighlightActiveLine(false);
 		}
+
+		converter = new Showdown.converter();
+
+		var convertText = function() {
+			// get input text
+			var text = window.aceEditor.getSession().getValue();
+			// Do the conversio
+			text = converter.makeHtml(text);
+
+			$('#markdown-display').html(text);
+		};
 
 		function setAceMode( language ){
 			var XMLMode = ace.require("ace/mode/xml").Mode
@@ -108,6 +122,11 @@
 				, PythonMode = ace.require("ace/mode/python").Mode
 				, MarkdownMode = ace.require("ace/mode/markdown").Mode
 				, ShellMode = ace.require("ace/mode/sh").Mode
+				, SQLMode = ace.require("ace/mode/sql").Mode
+				, XMLMode = ace.require("ace/mode/xml").Mode
+
+			$('#ace-editor').width('100%');
+			$('#markdown-display').hide();
 
 			if ( language === 'text'){
 				window.aceEditor.getSession().setMode(new TextMode());
@@ -121,12 +140,17 @@
 				window.aceEditor.getSession().setMode(new PerlMode());
 			}else if( language === 'python'){
 				window.aceEditor.getSession().setMode(new PythonMode());
-			}else if( language === 'markup'){
+			}else if( language === 'markdown'){
 				window.aceEditor.getSession().setMode(new MarkdownMode());
+				$('#ace-editor').width('50%');
+				$('#markdown-display').show().css({'display':'inline-block'});
+				convertText();
 			}else if( language === 'sql'){
 				window.aceEditor.getSession().setMode(new SQLMode());
 			}else if( language === 'sh'){
 				window.aceEditor.getSession().setMode(new ShellMode());
+			}else if( language === 'xml'){
+				window.aceEditor.getSession().setMode(new XMLMode());
 			}
 		}
 
