@@ -179,6 +179,7 @@
 
 			var setShortUrl = function(hash){
 				$('#short_url').val('http://'+window.location.host + '/#' + hash );
+				window.location.hash = "#" + hash;
 			}
 
 			$('#language').change(function(){
