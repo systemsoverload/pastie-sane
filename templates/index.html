@@ -8,11 +8,13 @@
 			font: 1.6em 'Georgia', 'Tahoma', serif;
 			color: #333;
 			height: 100%;
-			background-color: #fbfbfb
+			background-color: #fbfbfb;
+			font: 22px 'Monaco', 'Menlo', 'Ubuntu Mono', 'Droid Sans Mono', 'Consolas', monospace;
 		}
 
 		#header-content {
 			width: 100%;
+			min-width: 640px;
 			margin: 0 auto;
 		}
 		input, textarea, button {
@@ -23,17 +25,22 @@
 		}
 
 		#ace-editor {
-			display:inline-block;
 			height:100%;
 			width: 99%;
 		}
+
 		#markdown-display{
 			display:none;
-			float:right;
 			border:2px inset #cdcdcd;
 			font-size: .60em;
 			padding: 5px;
 			background-color: #ffffff
+		}
+
+		#markdown-edit{
+			display:none;
+			cursor: pointer;
+			font-size: .65em;
 		}
 		#short_url{
 			width:275px;
@@ -71,8 +78,15 @@
 		</div>
 
 		<table id="editor-container">
-			<tr><td><div id="markdown-display"></div></td></tr>
-			<tr><td><div id="ace-editor"></div></td></tr>
+			<tr>
+				<td style="width:50%;display:inline-block;">
+					<div id="ace-editor"></div>
+				</td>
+				<td style="width:50%">
+					<div id="markdown-display"></div>
+					<button type="button" id="markdown-edit">Show Markdown</button>
+				</td>
+			</tr>
 		</table>
 
 	</div>
@@ -93,8 +107,6 @@
 	<script src="/static/js/showdown.js" type="text/javascript"></script>
 	<script src="/static/js/highlight/highlight.pack.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		//Initialize highlightJS
-		hljs.initHighlightingOnLoad();
 
 		function initEditor() {
 			window.aceEditor = ace.edit("ace-editor");
@@ -105,6 +117,7 @@
 
 		converter = new Showdown.converter();
 
+		//Get ace editor text and convert it to markup with showdown
 		var convertText = function() {
 			//$('#ace-editor').slideUp();
 			// get input text
@@ -118,6 +131,7 @@
 
 		};
 
+		//Toggle ace editor language modes
 		function setAceMode( language ){
 			var XMLMode = ace.require("ace/mode/xml").Mode
 				, JSMode = ace.require("ace/mode/javascript").Mode
@@ -132,12 +146,12 @@
 				, SQLMode = ace.require("ace/mode/sql").Mode
 				, XMLMode = ace.require("ace/mode/xml").Mode
 
-			$('#ace-editor').width('99%');
+			$('#ace-editor').width( $('#ace-editor').parent().width() * .99 );
 			$('#ace-editor').height( $(window).height() - $('#header-content').height() - 50 );
-			window.aceEditor.resize();
+			columnMode('normal');
+			//window.aceEditor.resize();
 
-			$('#markdown-display').hide();
-			$('#ace-editor').show();
+			//$('#markdown-display').hide();
 
 			if ( language === 'text'){
 				window.aceEditor.getSession().setMode(new TextMode());
@@ -155,8 +169,11 @@
 				window.aceEditor.getSession().setMode(new LuaMode());
 			}else if( language === 'markdown'){
 				window.aceEditor.getSession().setMode(new MarkdownMode());
-				$('#markdown-display').show().css({'display':'inline-block'});
+				var $markdownDisplay = $('#markdown-display')
+					, $aceEditor = $('#ace-editor');
+					columnMode('markdown');
 				convertText();
+				fitEditor();
 			}else if( language === 'sql'){
 				window.aceEditor.getSession().setMode(new SQLMode());
 			}else if( language === 'sh'){
@@ -166,17 +183,56 @@
 			}
 		}
 
+		//Resize the ace editor to fit into its parent container and the window height
+		var fitEditor = function(){
+			$('#ace-editor').width( $('#ace-editor').parent().width() * .99 )
+			$('#ace-editor').height( $(window).height() - $('#header-content').height() - 50 );
+			window.aceEditor.resize();
+		}
+
+		var columnMode = function(mode){
+			var $markdownDisplay
+				, $markdownEdit
+				, $aceEditor;
+
+			$markdownDisplay = $('#markdown-display');
+			$aceEditor = $('#ace-editor');
+			$markdownEdit = $('#markdown-edit');
+
+			if (mode === 'markdown'){
+				$markdownDisplay.parent().width('100%');
+				$aceEditor.parent().width('100%');
+				$aceEditor.parent().css('display','inline-block');
+				$markdownDisplay.show();
+				$markdownEdit.show()
+				$aceEditor.hide();
+			}else if (mode === 'markdown-edit'){
+				$markdownDisplay.parent().width('50%');
+				$aceEditor.parent().css('display','inline-block');
+				$aceEditor.parent().width('100%');
+				$markdownDisplay.show();
+				$aceEditor.show();
+			}else if (mode === 'normal'){
+				$markdownDisplay.parent().width('0%');
+				$aceEditor.parent().width('100%');
+				$aceEditor.parent().css('display','table-cell');
+				$aceEditor.show();
+				$markdownDisplay.hide();
+				$markdownEdit.hide()
+			}
+
+			fitEditor();
+		}
+
 		$(function(){
 			//Initialize ace editor
 			initEditor();
-
+			window.aceEditor.getSession().setUseWrapMode(true);
+			//Update the markdown display panel whenever the text is updated
 			window.aceEditor.getSession().on('change', convertText);
 
-			$(window).resize(function() {
-				$('#ace-editor').width('99%');
-				$('#ace-editor').height( $(window).height() - $('#header-content').height() - 50 );
-				window.aceEditor.resize();
-			});
+			//Resize the ace editor to fit into the window everytime its resized
+			$(window).resize(fitEditor);
 
 			var loadData = function(data){
 				data = JSON.parse(data)
@@ -200,6 +256,20 @@
 				$('#short_url').val('http://'+window.location.host + '/#' + hash );
 				window.location.hash = "#" + hash;
 			}
+
+			$('#markdown-edit').click(function(e){
+
+				if( e.target.save ){
+					columnMode('markdown');
+					e.target.save = false;
+					e.target.innerText = 'Show Markdown';
+				}else{
+					columnMode('markdown-edit')
+					e.target.save = true;
+					e.target.innerText = 'Hide Markdown';
+				}
+
+			});
 
 			$('#language').change(function(){
 				setAceMode(this.value);
