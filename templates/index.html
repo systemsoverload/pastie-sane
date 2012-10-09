@@ -49,6 +49,9 @@
 			height:100%;
 		}
 	</style>
+	<script src="/static/js/codemirror-2.34/lib/codemirror.js"></script>
+	<link rel="stylesheet" href="static/js/codemirror-2.34/lib/codemirror.css">
+	<script src="/static/js/codemirror-2.34/mode/javascript/javascript.js"></script>
 </head>
 <body>
 	<div id="content">
@@ -74,20 +77,13 @@
 				<button id="save-button">Save</button>
 			</span>
 		</div>
-
-		<table id="editor-container">
-			<tr>
-				<td style="width:50%;display:inline-block;">
-					<div id="ace-editor"></div>
-				</td>
-				<td style="width:50%">
-					<div id="markdown-display"></div>
-					<button type="button" id="markdown-edit">Show Markdown</button>
-				</td>
-			</tr>
-		</table>
-
 	</div>
-
+	<div id="editor"></div>
+	<script type='text/javascript'>
+		var myCodeMirror = CodeMirror(document.body, {
+			value: "function myScript(){return 100;}\n"
+			, mode:  "javascript"
+		});
+	</script>
 </body>
 </html>
