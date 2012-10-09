@@ -114,8 +114,6 @@
 				if ( mode === 'json'){
 					mode = { name: "javascript", json: true};
 				// This is simply for legacy pastes already saved with an explicit 'text' mode
-				}else if (mode === 'text'){
-					mode = '';
 				}
 
 				CodeMirror.modeURL = "/static/js/codemirror-2.34/mode/%N/%N.js";
