@@ -97,9 +97,7 @@
 	<script type='text/javascript'>
 		$(function(){
 			var cmEditor = CodeMirror(document.getElementById('content'), {
-				value: "function myScript(){return 100;}\n"
-				, mode:  "javascript"
-				, theme: "monokai"
+				theme: "monokai"
 				, lineNumbers: true
 				, gutter: true
 			});
@@ -127,11 +125,17 @@
 					url: '/v1/get/' + hash
 					,success: function(res){
 						//Parse JSON response
-						var resData = JSON.parse(res);
+						var parsedRes = JSON.parse(res);
+
 						//change the dropdown box to parsedData.language
-						$('#language').val(resData.language);
+						$('#language').val(parsedRes.language);
+
 						//set the language mode to parsedData.language
-						setMode(resData.language);
+						setMode(parsedRes.language);
+
+						//set the editor value to parsedData.paste_data
+						cmEditor.setValue(parsedRes.paste_data);
+
 						setShortUrl(hash);
 					}
 				})
