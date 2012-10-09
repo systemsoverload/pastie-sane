@@ -109,11 +109,16 @@
 
 			//Toggle CodeMirror editor between different language modes
 			var setMode = function(mode) {
+
 				//For some reason JSON is just javascript with an argument...
 				if ( mode === 'json'){
-					mode = { name: "javascript", json: true}
+					mode = { name: "javascript", json: true};
+				// This is simply for legacy pastes already saved with an explicit 'text' mode
+				}else if (mode === 'text'){
+					mode = '';
 				}
-				CodeMirror.modeURL = "/static/js/codemirror-2.34/mode/%N/%N.js"
+
+				CodeMirror.modeURL = "/static/js/codemirror-2.34/mode/%N/%N.js";
 				cmEditor.setOption("mode", mode);
 				CodeMirror.autoLoadMode(cmEditor, mode);
 			}
