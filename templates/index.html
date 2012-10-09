@@ -147,6 +147,24 @@
 				window.location.hash = "#" + hash;
 			}
 
+			$('#save-button').click(function(){
+				var language = $('#language').val();
+				var paste_data = cmEditor.getValue();
+				var payload = {
+					"paste_data": input
+					,"language": language
+				}
+
+				$.ajax({
+					url:'/v1/save'
+					, type: 'POST'
+					, data: {"data":JSON.stringify(payload)}
+					, success: function(res){
+						setShortUrl(res)
+					}
+				})
+			});
+
 			if (window.location.hash){
 				getPaste();
 			}
