@@ -51,6 +51,9 @@ $(function(){
 			cmEditor.setValue(parsedRes.paste_data);
 
 			setShortUrl(hash);
+		}).fail(function(res){
+			console.log(res);
+			debugger;
 		});
 	}
 
