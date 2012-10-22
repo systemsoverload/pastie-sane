@@ -40,7 +40,7 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 
 _lang_map = {
 		# technically, application/* supports unicode and text/* "does not"
-		'text/plain': '',
+		'text/plain': 'text',
 		'text/x-python': 'python',
 		'text/x-perl': 'perl',
 		'application/xml': 'xml',
@@ -158,7 +158,7 @@ def _decode(fd):
 			return blob, _lang_map[x]
 
 	# ...else assume plain text; options exhausted
-	return blob, ''
+	return blob, 'text'
 
 
 #index page
