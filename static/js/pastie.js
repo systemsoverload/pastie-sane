@@ -33,26 +33,25 @@ $(function(){
 		var hash = window.location.hash.replace(/^#/, '');
 		$.ajax({
 			url: '/v1/get/' + hash
-			,success: function(res){
-				var parsedRes = res;
+		}).done(function(res){
+			var parsedRes = res;
 
-				//Parse JSON response
-				if ( typeof parsedRes !== 'object'){
-					parsedRes = JSON.parse(res);
-				}
-
-				//change the dropdown box to parsedData.language
-				$('#language').val(parsedRes.language);
-
-				//set the language mode to parsedData.language
-				setMode(parsedRes.language);
-
-				//set the editor value to parsedData.paste_data
-				cmEditor.setValue(parsedRes.paste_data);
-
-				setShortUrl(hash);
+			//Parse JSON response
+			if ( typeof parsedRes !== 'object'){
+				parsedRes = JSON.parse(res);
 			}
-		})
+
+			//change the dropdown box to parsedData.language
+			$('#language').val(parsedRes.language);
+
+			//set the language mode to parsedData.language
+			setMode(parsedRes.language);
+
+			//set the editor value to parsedData.paste_data
+			cmEditor.setValue(parsedRes.paste_data);
+
+			setShortUrl(hash);
+		});
 	}
 
 	//Set the contents of the URL display field
@@ -73,10 +72,9 @@ $(function(){
 			url:'/v1/save'
 			, type: 'POST'
 			, data: {"data":JSON.stringify(payload)}
-			, success: function(res){
-				setShortUrl(res)
-			}
-		})
+		}).done(function(res){
+			setShortUrl(res)
+		});
 	});
 
 	if (window.location.hash){
