@@ -30,8 +30,12 @@ $(function(){
 		$.ajax({
 			url: '/v1/get/' + hash
 			,success: function(res){
+				var parsedRes = res;
+
 				//Parse JSON response
-				var parsedRes = JSON.parse(res);
+				if ( typeof parsedRes !== 'object'){
+					parsedRes = JSON.parse(res);
+				}
 
 				//change the dropdown box to parsedData.language
 				$('#language').val(parsedRes.language);
