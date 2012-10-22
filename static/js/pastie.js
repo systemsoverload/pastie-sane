@@ -53,7 +53,7 @@ $(function(){
 			setShortUrl(hash);
 		}).fail(function(res){
 			console.log(res);
-			debugger;
+			alert('Ack something went wrong!')
 		});
 	}
 
