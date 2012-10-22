@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request
 from flask import url_for
 from flask.ext.redis import Redis
 from werkzeug import SharedDataMiddleware
@@ -192,7 +192,7 @@ def savePaste():
 def getPaste( pasteId = "" ):
 	if( pasteId ):
 		if redis.exists(pasteId):
-			return Response( redis.get(pasteId), mimetype='application/json' )
+			redis.get(pasteId)
 		else:
 			return "Error - Non-existant paste id"
 	else:
