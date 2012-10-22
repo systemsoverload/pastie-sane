@@ -16,7 +16,11 @@ $(function(){
 		//For some reason JSON is just javascript with an argument...
 		if ( mode === 'json'){
 			mode = { name: "javascript", json: true};
-		// This is simply for legacy pastes already saved with an explicit 'text' mode
+		}
+
+		//Backwards compatiblity support for older plaintext pastes
+		if ( mode === ''){
+			mode = 'text';
 		}
 
 		CodeMirror.modeURL = "/static/js/codemirror-2.34/mode/%N/%N.js";
