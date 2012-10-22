@@ -1,0 +1,57 @@
+body {
+	margin: 0px;
+	padding: 0px;
+	overflow: auto;
+	color: #333;
+	height: 100%;
+	background-color: #fbfbfb;
+	font: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Droid Sans Mono', 'Consolas', monospace;
+}
+
+#content{
+	/*border: 3px solid #971111;
+	background-color: #DDD;*/
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding-top: 155px;
+}
+/*So note carefully that, in order to resize the editor, you set a width on the wrapper (.CodeMirror)
+and a height on the scroller (class CodeMirror-scroll) element.*/
+.CodeMirror {
+	border: 1px solid #eee;
+	font-size: 12px;
+	line-height: 1.2;
+}
+
+.CodeMirror-lines {
+	margin-left: 15px;
+}
+.CodeMirror-scroll {
+	height: auto;
+	min-height: 650px;
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+
+#header-content{
+	/*border: 2px solid #279895;
+	background-color: #FFF;*/
+	padding: 0px 10px 0px 10px;
+	font-size: 22px;
+	height: 150px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+input, textarea, button {
+	font: 15px 'Monaco', 'Bitstream Vera Sans', 'Courier', monospace;
+}
+
+#short_url{
+	width:275px;
+}
