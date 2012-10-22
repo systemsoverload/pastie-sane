@@ -34,11 +34,13 @@ $(function(){
 		$.ajax({
 			url: '/v1/get/' + hash
 		}).done(function(res){
-			var parsedRes = res;
+			var parsedRes;
 
-			//Parse JSON response
-			if ( typeof parsedRes !== 'object'){
+			//Parse JSON response if need be
+			try{
 				parsedRes = JSON.parse(res);
+			}catch{
+				parsedRes = res;
 			}
 
 			//change the dropdown box to parsedData.language
