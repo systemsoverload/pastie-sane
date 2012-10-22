@@ -39,7 +39,7 @@ $(function(){
 			//Parse JSON response if need be
 			try{
 				parsedRes = JSON.parse(res);
-			}catch{
+			}catch(err){
 				parsedRes = res;
 			}
 
