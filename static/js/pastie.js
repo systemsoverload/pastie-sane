@@ -43,6 +43,8 @@ $(function(){
 				parsedRes = res;
 			}
 
+			parsedRes.language = parsedRes.language || 'text';
+
 			//change the dropdown box to parsedData.language
 			$('#language').val(parsedRes.language);
 
@@ -53,6 +55,7 @@ $(function(){
 			cmEditor.setValue(parsedRes.paste_data);
 
 			setShortUrl(hash);
+
 		}).fail(function(res){
 			console.log(res);
 			alert('Ack something went wrong!')
