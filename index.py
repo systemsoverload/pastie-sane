@@ -192,7 +192,7 @@ def savePaste():
 def getPaste( pasteId = "" ):
 	if( pasteId ):
 		if redis.exists(pasteId):
-			redis.get(pasteId)
+			return redis.get(pasteId)
 		else:
 			return "Error - Non-existant paste id"
 	else:
