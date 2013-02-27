@@ -1,10 +1,10 @@
 $(function(){
-	$('.CodeMirror').focus();
 
 	var cmEditor = CodeMirror(document.getElementById('content'), {
 		theme: "monokai"
 		, lineNumbers: true
 		, gutter: true
+		, autoFocus: true
 	});
 
 	$('#language').change(function(){
