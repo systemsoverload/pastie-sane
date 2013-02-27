@@ -1,4 +1,5 @@
 $(function(){
+	$('.CodeMirror').focus();
 
 	var cmEditor = CodeMirror(document.getElementById('content'), {
 		theme: "monokai"
