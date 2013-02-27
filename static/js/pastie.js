@@ -1,4 +1,5 @@
 $(function(){
+
 	var cmEditor = CodeMirror(document.getElementById('content'), {
 		theme: "monokai"
 		, lineNumbers: true
@@ -68,7 +69,7 @@ $(function(){
 		window.location.hash = "#" + hash;
 	}
 
-	$('#save-button').click(function(){
+	var savePaste = function(){
 		var language = $('#language').val();
 		var paste_data = cmEditor.getValue();
 		var payload = {
@@ -83,11 +84,23 @@ $(function(){
 		}).done(function(res){
 			setShortUrl(res)
 		});
+	}
+
+	$('#save-button').click(function(){
+		savePaste();
 	});
 
 	if (window.location.hash){
 		getPaste();
 	}
+
+	//Override ctrl+s in the browser and save a new paste
+	document.addEventListener("keydown", function(e) {
+		if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+			e.preventDefault();
+			savePaste()
+		}
+	}, false);
 
 	window.onhashchange = getPaste;
 
