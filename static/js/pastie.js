@@ -4,7 +4,7 @@ $(function(){
 		theme: "monokai"
 		, lineNumbers: true
 		, gutter: true
-		, autoFocus: true
+		, autofocus: true
 	});
 
 	$('#language').change(function(){
