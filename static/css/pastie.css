@@ -24,7 +24,7 @@ body {
 
 .row {
 	width: 300px;
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 	clear:both;
 }
 .row:after {
@@ -87,16 +87,16 @@ and a height on the scroller (class CodeMirror-scroll) element.*/
 .CodeMirror {
 	font-size: 12px;
 	line-height: 1.2;
-	height: 100%;
+	height: auto;
 }
 
 .CodeMirror-lines {
 	margin-left: 15px;
 }
 .CodeMirror-scroll {
-	height: 100%;
 	overflow-y: hidden;
 	overflow-x: auto;
+	min-height: 960px;
 }
 
 #header-content{

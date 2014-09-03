@@ -1,19 +1,27 @@
-$(function(){
 
-	var cmEditor = CodeMirror(document.getElementById('content'), {
-		theme: "early-space"
-		, lineNumbers: true
-		, gutter: true
-		, autofocus: true
-	});
+
+$(function(){
+	console.log('min-height', $(document).height() + 'px');
+	$('.CodeMirror-scroll').css('min-height', $(document).height() + 'px');
+	$('.CodeMirror').css('height', '100%');
+
+	var cmEditor = CodeMirror(
+		document.getElementById('content'),
+		{
+			theme: "early-space",
+			lineNumbers: true,
+			gutter: true,
+			autofocus: true
+		}
+	);
 
 	$('#language').change(function(){
 		setMode(this.value);
-	})
+	});
 
 
 	//Toggle CodeMirror editor between different language modes
-	var setMode = function(mode) {
+	var setMode = function(mode){
 
 		//For some reason JSON is just javascript with an argument...
 		if ( mode === 'json'){
@@ -25,10 +33,10 @@ $(function(){
 			mode = 'text';
 		}
 
-		CodeMirror.modeURL = "/static/js/codemirror-2.34/mode/%N/%N.js";
+		CodeMirror.modeURL = "/static/js/codemirror-4.5/mode/%N/%N.js";
 		cmEditor.setOption("mode", mode);
 		CodeMirror.autoLoadMode(cmEditor, mode);
-	}
+	};
 
 	//Retrieve the past as indicated in the URL hash
 	var getPaste  = function(){
@@ -60,32 +68,32 @@ $(function(){
 
 		}).fail(function(res){
 			console.log(res);
-			alert('Ack something went wrong!')
+			alert('Ack something went wrong!');
 		});
-	}
+	};
 
 	//Set the contents of the URL display field
 	var setShortUrl = function(hash){
 		$('#short_url').val('http://'+window.location.host + '/#' + hash );
 		window.location.hash = "#" + hash;
-	}
+	};
 
 	var savePaste = function(){
 		var language = $('#language').val();
 		var paste_data = cmEditor.getValue();
 		var payload = {
-			"paste_data": paste_data
-			,"language": language
-		}
+			"paste_data": paste_data,
+			"language": language
+		};
 
 		$.ajax({
-			url:'/v1/save'
-			, type: 'POST'
-			, data: {"data":JSON.stringify(payload)}
+			url:'/v1/save',
+			type: 'POST',
+			data: {"data":JSON.stringify(payload)}
 		}).done(function(res){
-			setShortUrl(res)
+			setShortUrl(res);
 		});
-	}
+	};
 
 	$('#save-button').click(function(){
 		savePaste();
@@ -97,12 +105,14 @@ $(function(){
 
 	//Override ctrl+s in the browser and save a new paste
 	document.addEventListener("keydown", function(e) {
-		if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+		var ctrl = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
+		if (e.keyCode == 83 && ctrl){
 			e.preventDefault();
-			savePaste()
+			savePaste();
+		}else if(e.keyCode == 80 && e.shiftKey && ctrl){
+			$('#language').focus();
 		}
 	}, false);
 
 	window.onhashchange = getPaste;
-
 });
