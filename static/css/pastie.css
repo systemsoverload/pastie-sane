@@ -123,6 +123,7 @@ input#short_url {
 	background: transparent;
 	border: none;
 	padding: 8px;
+	font-size: 0.9em;
 }
 
 #short_url{
