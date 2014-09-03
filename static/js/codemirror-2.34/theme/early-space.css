@@ -1,0 +1,44 @@
+/*
+http://lesscss.org/ dark theme
+Ported to CodeMirror by Peter Kroon
+*/
+.cm-s-early-space {
+  line-height: 1.5em;
+}
+.cm-s-early-space {
+  font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', 'Monaco', Courier, monospace !important;
+}
+
+.cm-s-early-space { background: #2b303b; color: #EBEFE7; text-shadow: 0 -1px 1px #262626; }
+.cm-s-early-space div.CodeMirror-selected {background: #45443B !important;} /* 33322B*/
+.cm-s-early-space .CodeMirror-cursor { border-left: 1px solid white !important; }
+.cm-s-early-space .CodeMirror-lines { margin-left:3px; margin-right:3px; }/*editable code holder*/
+
+div.CodeMirror span.CodeMirror-matchingbracket { color: #7EFC7E; }/*65FC65*/
+
+.cm-s-early-space .CodeMirror-gutter { background: #2b303b; border-right:1px solid #414651; padding-right:3px; min-width:2.5em; }
+.cm-s-early-space .CodeMirror-gutter-text { color: #6a7489; }
+
+.cm-s-early-space span.cm-keyword { color: #599eff; }
+.cm-s-early-space span.cm-atom { color: #C2B470; }
+.cm-s-early-space span.cm-number { color: #B35E4D; }
+.cm-s-early-space span.cm-def {color: white;}
+.cm-s-early-space span.cm-variable { color:#D9BF8C; }
+.cm-s-early-space span.cm-variable-2 { color: #669199; }
+.cm-s-early-space span.cm-variable-3 { color: white; }
+.cm-s-early-space span.cm-property {color: #92A75C;}
+.cm-s-early-space span.cm-operator {color: #92A75C;}
+.cm-s-early-space span.cm-comment { color: #666; }
+.cm-s-early-space span.cm-string { color: #BCD279; }
+.cm-s-early-space span.cm-string-2 {color: #f50;}
+.cm-s-early-space span.cm-meta { color: #738C73; }
+.cm-s-early-space span.cm-error { color: #9d1e15; }
+.cm-s-early-space span.cm-qualifier {color: #555;}
+.cm-s-early-space span.cm-builtin { color: #ff9e59; }
+.cm-s-early-space span.cm-bracket { color: #EBEFE7; }
+.cm-s-early-space span.cm-tag { color: #669199; }
+.cm-s-early-space span.cm-attribute {color: #00c;}
+.cm-s-early-space span.cm-header {color: #a0a;}
+.cm-s-early-space span.cm-quote {color: #090;}
+.cm-s-early-space span.cm-hr {color: #999;}
+.cm-s-early-space span.cm-link {color: #00c;}

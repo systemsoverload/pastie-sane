@@ -1,7 +1,7 @@
 $(function(){
 
 	var cmEditor = CodeMirror(document.getElementById('content'), {
-		theme: "monokai"
+		theme: "early-space"
 		, lineNumbers: true
 		, gutter: true
 		, autofocus: true
