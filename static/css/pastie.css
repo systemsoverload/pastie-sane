@@ -1,8 +1,12 @@
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
+
 body {
 	margin: 0px;
 	padding: 0px;
 	overflow: auto;
-	color: #333;
+	color: #6F788C;
 	height: 100%;
 	background-color: #fbfbfb;
 	font: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Droid Sans Mono', 'Consolas', monospace;
@@ -16,12 +20,71 @@ body {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	padding-top: 155px;
+}
+
+.row {
+	width: 300px;
+	margin-bottom: 20px;
+	clear:both;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.row:last-child {margin-bottom: 0;}
+a#logo {
+	color: #6a7489;
+	text-decoration: none;
+	transition: color 0.2s ease-in-out;
+	display:block;
+	width: 50%;
+	float: left;
+}
+a#logo i {margin-right: 6px; font-size:0.8em;}
+a#logo:hover {color:#f16965;}
+a#logo:hover + i {color: white;}
+h1 {
+	margin: 0;
+}
+
+button#save-button {
+	background: rgba(0,0,0,0.1);
+	padding: 8px 12px;
+	color: #6a7489;
+	font-family: 'Lato', arial, sans-serif;
+	font-size: 1em;
+	font-weight: 300;
+	border: none;
+	cursor: pointer;
+	transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+button#save-button:hover {
+	color:#232830;
+	background: #599eff;
+}
+button#save-button:focus {outline: none;}
+button#save-button i {margin-right: 6px;}
+select#language {
+	color: #e5e5e5;
+	padding: 8px 12px;
+	margin-left: 12px;
+	width: 150px;
+	border: 1px solid #414651;
+	box-shadow: none;
+	background: transparent;
+	background-image: url('../img/down-arrow.png');
+	background-position: 130px;
+	background-size: 10px;
+	background-repeat: no-repeat;
+	-webkit-appearance: none;
+}
+select#language:focus {
+	outline: none;
 }
 /*So note carefully that, in order to resize the editor, you set a width on the wrapper (.CodeMirror)
 and a height on the scroller (class CodeMirror-scroll) element.*/
 .CodeMirror {
-	border: 1px solid #eee;
 	font-size: 12px;
 	line-height: 1.2;
 }
@@ -39,19 +102,79 @@ and a height on the scroller (class CodeMirror-scroll) element.*/
 #header-content{
 	/*border: 2px solid #279895;
 	background-color: #FFF;*/
-	padding: 0px 10px 0px 10px;
-	font-size: 22px;
-	height: 150px;
-	position: absolute;
+	font-size: 14px;
+	padding: 20px;
+	height: auto;
+	width: 300px;
+	position: fixed;
 	top: 0;
-	left: 0;
 	right: 0;
+	background: #232830;
+	font-family: 'Lato', arial, sans-serif;
+	font-weight: 300;
+	z-index: 999;
 }
 
-input, textarea, button {
+input, textarea {
 	font: 15px 'Monaco', 'Bitstream Vera Sans', 'Courier', monospace;
 }
 
+input#short_url {
+	background: transparent;
+	border: none;
+	padding: 8px;
+}
+
 #short_url{
-	width:275px;
+	width:250px;
+}
+
+
+/* TOOLTIP */
+.shortcut-container {
+	position:relative;
+	width:50%;
+	float: left;
+}
+.tooltip {
+	background: transparent;
+	left: -999em;
+	padding: 0.7em 0.5em;
+	border-radius: 3px;
+	position: absolute;
+	opacity: 0;
+	-moz-transform: translateY(10px);
+	-ms-transform: translateY(10px);
+	-webkit-transform: translateY(10px);
+	transform: translateY(10px);
+	-moz-transition: -moz-transform 0.3s, opacity 0.3s;
+	-o-transition: -o-transform 0.3s, opacity 0.3s;
+	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+	transition: transform 0.3s, opacity 0.3s;
+}
+.shortcut-container:hover .tooltip {
+	background: rgba(255,255,255,0.5);
+	left: 10px;
+	top: 44px;
+	opacity: 1;
+	-moz-transform: translateY(0px);
+	-ms-transform: translateY(0px);
+	-webkit-transform: translateY(0px);
+	transform: translateY(0px);
+}
+.tooltip small {
+	color: #232830;
+	font-weight: 600;
+	font-size: 0.8em;
+}
+
+.arrow {
+	position: absolute;
+	top:-6px;
+	left: 22px;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid rgba(255,255,255,0.5);
 }
