@@ -110,6 +110,7 @@ $(function(){
 			e.preventDefault();
 			savePaste();
 		}else if(e.keyCode == 80 && e.shiftKey && ctrl){
+			e.preventDefault();
 			$('#language').focus();
 		}
 	}, false);
