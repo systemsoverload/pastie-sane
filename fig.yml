@@ -1,0 +1,10 @@
+redis:
+  image: redis:2.6
+
+pastie:
+  build: .
+  links:
+    - redis:redis
+  ports:
+    - 9090:8080
+
